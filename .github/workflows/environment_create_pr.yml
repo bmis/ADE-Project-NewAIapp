@@ -97,4 +97,3 @@ jobs:
             [View the deployed API](https://${{ env.ENVIRONMENT_NAME }}.azurewebsites.net/api/time)
             [View environment resources in the Azure portal](https://portal.azure.com/#@${{ vars.AZURE_TENANT_ID }}/resource${{ env.ENVIRONMENT_RG }})
           edit-mode: replace
-          continue-on-error: true
