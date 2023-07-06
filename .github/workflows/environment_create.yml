@@ -96,5 +96,5 @@ jobs:
           issue-number: ${{ github.event.pull_request.number }}
           body: |
             [View the deployed API](https://${{ env.ENVIRONMENT_NAME }}.azurewebsites.net/api/time)
-            [View environment resources in the Azure portal](https://portal.azure.com/#@${{ vars.AZURE_TENANT_ID }}/resource$ENVIRONMENT_RG)
+            [View environment resources in the Azure portal](https://portal.azure.com/#@${{ vars.AZURE_TENANT_ID }}/resource${{ env.ENVIRONMENT_RG }})
           edit-mode: replace
