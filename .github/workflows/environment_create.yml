@@ -94,6 +94,6 @@ jobs:
           comment-id: ${{ steps.fc.outputs.comment-id }}
           issue-number: ${{ github.event.pull_request.number }}
           body: |
-            Build output
-            ${{ steps.build.outputs.build-log }}
+            [View the deployed API](https://${{ env.ENVIRONMENT_NAME }}.azurewebsites.net/api/time)
+            [View environment resources in the Azure portal](https://portal.azure.com/#@${{ vars.AZURE_TENANT_ID }}/resource$environment_rg)
           edit-mode: replace
