@@ -82,14 +82,17 @@ jobs:
           echo "- [View the deployed API](https://${{ env.ENVIRONMENT_NAME }}.azurewebsites.net/api/time)" >> $GITHUB_STEP_SUMMARY
       - name: Find Comment
         uses: peter-evans/find-comment@v2
+        continue-on-error: true
         id: fc
         with:
           issue-number: ${{ github.event.pull_request.number }}
           comment-author: 'github-actions[bot]'
           body-includes: Build output
+          
 
       - name: Create or update comment
         uses: peter-evans/create-or-update-comment@v3
+        continue-on-error: true
         with:
           comment-id: ${{ steps.fc.outputs.comment-id }}
           issue-number: ${{ github.event.pull_request.number }}
@@ -97,4 +100,3 @@ jobs:
             [View the deployed API](https://${{ env.ENVIRONMENT_NAME }}.azurewebsites.net/api/time)
             [View environment resources in the Azure portal](https://portal.azure.com/#@${{ vars.AZURE_TENANT_ID }}/resource${{ env.ENVIRONMENT_RG }})
           edit-mode: replace
-          continue-on-error: true
