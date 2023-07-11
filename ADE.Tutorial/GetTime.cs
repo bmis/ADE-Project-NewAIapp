@@ -51,7 +51,7 @@ namespace ADE.Tutorial
 
                 if (joke != null)
                 {
-                    response.WriteString($"Here's a joke for you:\n{joke.Setup}\n{joke.Punchline}\n\n");
+                    response.WriteString($"Here's a joke for you:\n{joke.setup}\n{joke.punchline}\n\n");
                 }
                 else
                 {
@@ -72,7 +72,7 @@ namespace ADE.Tutorial
 
     public class Joke
     {
-        public string Setup { get; set; }
-        public string Punchline { get; set; }
+        public string setup { get; set; }
+        public string punchline { get; set; }
     }
 }
