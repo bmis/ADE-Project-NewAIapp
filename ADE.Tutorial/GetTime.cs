@@ -39,16 +39,32 @@ namespace ADE.Tutorial
             // Get a random joke from the API
             var client = new HttpClient();
             var jokeResponse = await client.GetAsync("https://official-joke-api.appspot.com/random_joke");
-            var jokeJson = await jokeResponse.Content.ReadAsStringAsync();
-            var joke = JsonSerializer.Deserialize<Joke>(jokeJson);
 
-            var now = DateTime.UtcNow;
+            if (jokeResponse.IsSuccessStatusCode)
+            {
+                var jokeJson = await jokeResponse.Content.ReadAsStringAsync();
+                var joke = JsonSerializer.Deserialize<Joke>(jokeJson);
 
-            response.WriteString($"UTC Time: {now}\n\n");
-            response.WriteString($"Here's a joke for you:\n{joke.Setup}\n{joke.Punchline}\n\n");
+                var now = DateTime.UtcNow;
 
-            foreach (var timeZone in timeZones)
-                response.WriteString($"{(timeZone.IsDaylightSavingTime(now) ? timeZone.DaylightName : timeZone.StandardName)}: {TimeZoneInfo.ConvertTimeFromUtc(now, timeZone)}\n");
+                response.WriteString($"UTC Time: {now}\n\n");
+
+                if (joke != null)
+                {
+                    response.WriteString($"Here's a joke for you:\n{joke.Setup}\n{joke.Punchline}\n\n");
+                }
+                else
+                {
+                    response.WriteString("Sorry, I couldn't find a joke right now. Please try again later.\n\n");
+                }
+
+                foreach (var timeZone in timeZones)
+                    response.WriteString($"{(timeZone.IsDaylightSavingTime(now) ? timeZone.DaylightName : timeZone.StandardName)}: {TimeZoneInfo.ConvertTimeFromUtc(now, timeZone)}\n");
+            }
+            else
+            {
+                response.WriteString("Sorry, I couldn't get a joke right now. Please try again later.\n\n");
+            }
 
             return response;
         }
