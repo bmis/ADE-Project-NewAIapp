@@ -2,6 +2,9 @@ using System.Net;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
+using System.Net.Http;
+using System.Text.Json;
+using System.Collections.Generic;
 
 namespace ADE.Tutorial
 {
@@ -25,21 +28,42 @@ namespace ADE.Tutorial
         }
 
         [Function("GetTime")]
-        public HttpResponseData Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "time")] HttpRequestData req)
+        public async Task<HttpResponseData> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "time")] HttpRequestData req)
         {
             logger.LogInformation("C# HTTP trigger function processed a request.");
 
             var response = req.CreateResponse(HttpStatusCode.OK);
             response.Headers.Add("Content-Type", "text/plain; charset=utf-8");
 
+            // Get a random joke from the API
+            var client = new HttpClient();
+            var jokeResponse = await client.GetAsync("https://official-joke-api.appspot.com/random_joke");
+            var jokeJson = await jokeResponse.Content.ReadAsStringAsync();
+            var joke = JsonSerializer.Deserialize<Joke>(jokeJson);
+
             var now = DateTime.UtcNow;
 
-            response.WriteString($"UTC Time test12: {now}");
+            response.WriteString($"UTC Time: {now}\n\n");
+
+            if (joke != null)
+            {
+                response.WriteString($"Here's a joke for you:\n{joke.setup}\n{joke.punchline}\n\n");
+            }
+            else
+            {
+                response.WriteString("Sorry, I couldn't find a joke right now. Please try again later.\n\n");
+            }
 
             foreach (var timeZone in timeZones)
-                response.WriteString($"{(timeZone.IsDaylightSavingTime(now) ? timeZone.DaylightName : timeZone.StandardName)}: {TimeZoneInfo.ConvertTimeFromUtc(now, timeZone)}");
+                response.WriteString($"{(timeZone.IsDaylightSavingTime(now) ? timeZone.DaylightName : timeZone.StandardName)}: {TimeZoneInfo.ConvertTimeFromUtc(now, timeZone)}\n");
 
             return response;
         }
+    }
+
+    public class Joke
+    {
+        public string setup { get; set; }
+        public string punchline { get; set; }
     }
 }
