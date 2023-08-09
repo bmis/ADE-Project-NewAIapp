@@ -34,7 +34,9 @@ namespace ADE.Tutorial
 
             var now = DateTime.UtcNow;
 
+
             response.WriteString($"UTC Time test16: {now}");
+
 
             foreach (var timeZone in timeZones)
                 response.WriteString($"{(timeZone.IsDaylightSavingTime(now) ? timeZone.DaylightName : timeZone.StandardName)}: {TimeZoneInfo.ConvertTimeFromUtc(now, timeZone)}");
